@@ -62,7 +62,11 @@ with open("data.json", "r", encoding="utf-8") as f:
 # -------------------------
 # UI
 # -------------------------
-st.image("assets/quickscore_logo.png", width=220)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+logo_path = os.path.join(BASE_DIR, "assets", "quickscore_logo.png")
+
+if os.path.exists(logo_path):
+    st.image(logo_path, width=220)
 
 level = st.selectbox(
     "Select your CIPD qualification level:",
