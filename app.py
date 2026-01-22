@@ -55,8 +55,8 @@ if os.path.exists(logo_path):
 # -------------------------
 # AZURE OPENAI CONFIG
 # -------------------------
-AZURE_OPENAI_ENDPOINT = os.getenv("OPENAI_API_ENDPOINT")
-AZURE_OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+AZURE_OPENAI_ENDPOINT = os.getenv("openai_ai_endpoint")
+AZURE_OPENAI_API_KEY = os.getenv("openai_api_key")
 
 def call_azure_openai(prompt: str) -> str:
     headers = {
