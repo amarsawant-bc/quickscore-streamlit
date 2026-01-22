@@ -47,7 +47,11 @@ st.set_page_config(
     layout="centered"
 )
 
-client = OpenAI()
+client = OpenAI(
+    api_key=os.getenv("openai_api_key"),
+    base_url=os.getenv("openai_api_endpoint")
+)
+
 
 # -------------------------
 # LOAD DATA
@@ -172,7 +176,7 @@ Here are some suggestions to improve your answer:
 if st.button("Submit"):
     with st.spinner("Evaluating submission..."):
         validation = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-35-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": validation_prompt()}
@@ -184,7 +188,7 @@ if st.button("Submit"):
 
         if validation.startswith("You appear to be on the right track"):
             suggestions = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-35-turbo",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant."},
                     {"role": "user", "content": suggestion_prompt()}
