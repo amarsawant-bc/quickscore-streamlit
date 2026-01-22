@@ -62,7 +62,7 @@ with open("data.json", "r", encoding="utf-8") as f:
 # -------------------------
 # UI
 # -------------------------
-st.image("quickscore_logo.png", width=220)
+st.image("assets/quickscore_logo.png", width=220)
 
 level = st.selectbox(
     "Select your CIPD qualification level:",
