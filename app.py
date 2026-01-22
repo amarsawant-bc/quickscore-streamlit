@@ -4,42 +4,32 @@
 # Version: QS-PROMPT-REF-1.0
 # Status: LOCKED
 # Date Locked: 22 January 2026
+# Owner: Avado PQ Limited
 #
 # PURPOSE
 # -------
 # This Streamlit application is the canonical reference
 # implementation for all QuickScore prompt behaviour.
 #
-# It defines the authoritative:
-# - Prompt wording (Validation & Suggestions)
-# - Prompt ordering and execution flow
-# - System and user role usage
-# - Output constraints and formatting rules
-# - Decision logic delegated to the LLM
-#
 # GOVERNANCE RULES
 # ----------------
 # 1. Prompt text must match the WordPress (PHP) implementation
 #    character-for-character.
-# 2. No semantic logic (e.g. word count thresholds) may be moved
-#    to the frontend.
-# 3. The system role MUST remain:
+# 2. No semantic logic may be moved to the frontend.
+# 3. System role MUST remain:
 #       "You are a helpful assistant."
 # 4. Output must remain plain text (no Markdown).
-# 5. Any future changes must be:
-#       Streamlit → approved → ported to PHP
+# 5. Any changes must be approved in Streamlit first.
 #
-# If PHP and Streamlit outputs diverge, this Streamlit version
-# is the source of truth.
-#
-# ============================================================== 
+# ==============================================================
+
 import os
 import json
+import requests
 import streamlit as st
-from openai import OpenAI
 
 # -------------------------
-# CONFIG
+# STREAMLIT CONFIG
 # -------------------------
 st.set_page_config(
     page_title="QuickScore",
@@ -47,27 +37,55 @@ st.set_page_config(
     layout="centered"
 )
 
-client = OpenAI(
-    api_key=os.getenv("openai_api_key"),
-    base_url=os.getenv("openai_api_endpoint")
-)
-
-
 # -------------------------
 # LOAD DATA
 # -------------------------
-with open("data.json", "r", encoding="utf-8") as f:
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(BASE_DIR, "data.json"), "r", encoding="utf-8") as f:
     DATA = json.load(f)
 
 # -------------------------
-# UI
+# LOAD LOGO (SAFE)
 # -------------------------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 logo_path = os.path.join(BASE_DIR, "assets", "quickscore_logo.png")
-
 if os.path.exists(logo_path):
     st.image(logo_path, width=220)
 
+# -------------------------
+# AZURE OPENAI CONFIG
+# -------------------------
+AZURE_OPENAI_ENDPOINT = os.getenv("OPENAI_API_ENDPOINT")
+AZURE_OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+def call_azure_openai(prompt: str) -> str:
+    headers = {
+        "Content-Type": "application/json",
+        "api-key": AZURE_OPENAI_API_KEY
+    }
+
+    payload = {
+        "messages": [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0,
+        "max_tokens": 800
+    }
+
+    response = requests.post(
+        AZURE_OPENAI_ENDPOINT,
+        headers=headers,
+        json=payload,
+        timeout=60
+    )
+
+    response.raise_for_status()
+    return response.json()["choices"][0]["message"]["content"].strip()
+
+# -------------------------
+# UI INPUTS
+# -------------------------
 level = st.selectbox(
     "Select your CIPD qualification level:",
     ["Select an option"] + list(DATA.keys())
@@ -84,7 +102,7 @@ if level != "Select an option":
 if study_unit:
     ac_items = DATA[level][study_unit]
     assessment = st.selectbox(
-        "Select an assessment criterion:",
+        "Select your assessment criterion:",
         [i["Assessment Criteria"] for i in ac_items]
     )
 
@@ -101,7 +119,7 @@ answer = st.text_area(
 )
 
 # -------------------------
-# PROMPTS (PHP-IDENTICAL)
+# PROMPTS (LOCKED)
 # -------------------------
 def validation_prompt():
     return f"""
@@ -144,9 +162,10 @@ Question: {question}
 Submitted Answer: {answer}
 
 Using the provided certification level, Assessment criteria, Study unit, Question and Submitted Answer,
-offer suggestions in brief for improvement so that the submitted answer aligns with the assessment criteria.
+offer some suggestions in brief for improvement in the Submitted Answer so that the submitted answer
+should align well with the assessment criteria.
 
-The learner is expected to provide their response as a written paragraph using full sentences in an academic tone.
+The learner is expected to provide their response as a written paragraph, using full sentences in an academic tone.
 They should not use bullet points or lists in their submitted answer.
 
 Provide constructive feedback addressed directly to 'you'.
@@ -179,26 +198,23 @@ Here are some suggestions to improve your answer:
 # -------------------------
 if st.button("Submit"):
     with st.spinner("Evaluating submission..."):
-        validation = client.chat.completions.create(
-            model="gpt-35-turbo",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": validation_prompt()}
-            ]
-        ).choices[0].message.content.strip()
+        validation = call_azure_openai(validation_prompt())
 
         st.subheader("Validation Result")
         st.text(validation)
 
         if validation.startswith("You appear to be on the right track"):
-            suggestions = client.chat.completions.create(
-                model="gpt-35-turbo",
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": suggestion_prompt()}
-                ]
-            ).choices[0].message.content.strip()
+            suggestions = call_azure_openai(suggestion_prompt())
 
             st.divider()
             st.subheader("Suggestions for Improvement")
             st.text(suggestions)
+
+# -------------------------
+# DISCLAIMER
+# -------------------------
+st.markdown("""
+**Disclaimer:**  
+QuickScore feedback is designed to support learning and does not replace tutor assessment or grading decisions.
+Always refer to the official CIPD assessment brief and grading criteria.
+""")
