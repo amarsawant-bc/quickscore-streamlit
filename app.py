@@ -27,6 +27,10 @@ import os
 import json
 import requests
 import streamlit as st
+from dotenv import load_dotenv
+
+# Load environment variables from .env file if it exists
+load_dotenv()
 
 # -------------------------
 # STREAMLIT CONFIG
@@ -58,7 +62,19 @@ if os.path.exists(logo_path):
 AZURE_OPENAI_ENDPOINT = os.getenv("openai_ai_endpoint")
 AZURE_OPENAI_API_KEY = os.getenv("openai_api_key")
 
+def validate_config() -> tuple[bool, str]:
+    """Validate that required environment variables are set."""
+    if not AZURE_OPENAI_ENDPOINT:
+        return False, "Missing environment variable: `openai_ai_endpoint`"
+    if not AZURE_OPENAI_API_KEY:
+        return False, "Missing environment variable: `openai_api_key`"
+    return True, ""
+
 def call_azure_openai(prompt: str) -> str:
+    """Call Azure OpenAI API with the given prompt."""
+    if not AZURE_OPENAI_ENDPOINT or not AZURE_OPENAI_API_KEY:
+        raise ValueError("Azure OpenAI configuration is missing. Please set environment variables.")
+    
     headers = {
         "Content-Type": "application/json",
         "api-key": AZURE_OPENAI_API_KEY
@@ -194,21 +210,52 @@ Here are some suggestions to improve your answer:
 """
 
 # -------------------------
+# CONFIGURATION CHECK
+# -------------------------
+config_valid, config_error = validate_config()
+if not config_valid:
+    st.error(f"⚠️ **Configuration Error:** {config_error}")
+    st.info("""
+    **To fix this:**
+    
+    1. Create a `.env` file in the project root with:
+       ```
+       openai_ai_endpoint=https://your-endpoint.openai.azure.com
+       openai_api_key=your-api-key-here
+       ```
+    
+    2. Or set environment variables in your shell:
+       ```bash
+       export openai_ai_endpoint="https://your-endpoint.openai.azure.com"
+       export openai_api_key="your-api-key-here"
+       ```
+    
+    3. Restart the Streamlit app after setting the variables.
+    """)
+    st.stop()
+
+# -------------------------
 # SUBMIT
 # -------------------------
 if st.button("Submit"):
     with st.spinner("Evaluating submission..."):
-        validation = call_azure_openai(validation_prompt())
+        try:
+            validation = call_azure_openai(validation_prompt())
 
-        st.subheader("Validation Result")
-        st.text(validation)
+            st.subheader("Validation Result")
+            st.text(validation)
 
-        if validation.startswith("You appear to be on the right track"):
-            suggestions = call_azure_openai(suggestion_prompt())
+            if validation.startswith("You appear to be on the right track"):
+                suggestions = call_azure_openai(suggestion_prompt())
 
-            st.divider()
-            st.subheader("Suggestions for Improvement")
-            st.text(suggestions)
+                st.divider()
+                st.subheader("Suggestions for Improvement")
+                st.text(suggestions)
+        except requests.exceptions.RequestException as e:
+            st.error(f"❌ **API Error:** Failed to connect to Azure OpenAI. Please check your endpoint and API key.")
+            st.code(str(e))
+        except Exception as e:
+            st.error(f"❌ **Error:** {str(e)}")
 
 # -------------------------
 # DISCLAIMER
