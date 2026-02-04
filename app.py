@@ -170,7 +170,48 @@ and briefly acknowledge and summarise the user's answer in one sentence without 
 """
 
 def suggestion_prompt():
-    return f"""
+    print("level:", level)
+    if "Level 7" in level:
+        return f"""
+certification level: {level}
+Assessment criteria: {assessment}
+Study unit: {study_unit}
+Question: {question}
+Submitted Answer: {answer}
+
+Using the provided certification level, Assessment criteria, Study unit, Question and Submitted Answer,
+offer some suggestions in brief for improvement in the Submitted Answer so that the submitted answer
+should align well with the assessment criteria.
+
+The learner is expected to provide their response as a written paragraph, using full sentences in an academic tone.
+They should not use bullet points or lists in their submitted answer.
+
+Provide constructive feedback addressed directly to 'you'.
+Use British English.
+Do not use Markdown formatting.
+
+Here are some suggestions to improve your answer:
+
+1. Focus:
+    - Suggestion text here.
+
+2. Depth & breadth of understanding:
+    - Suggestion text here.
+
+3. Strategic application & professional advice:
+    - Suggestion text here.
+
+4. Research & wider reading:
+    - Suggestion text here.
+
+5. Persuasiveness & originality:
+    - Suggestion text here.
+
+6. Presentation & language:
+    - Suggestion text here.
+"""
+    else:
+        return f"""
 certification level: {level}
 Assessment criteria: {assessment}
 Study unit: {study_unit}
