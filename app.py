@@ -129,10 +129,16 @@ if assessment:
     )
     st.text_area("Question:", question, height=120, disabled=True)
 
-answer = st.text_area(
-    "Paste your answer here (max 400 words):",
-    height=220
-)
+if level.lower().find("level 7") != -1:
+    answer = st.text_area(
+        "Paste your answer here (max 1000 words):",
+        height=220
+    )
+else:
+    answer = st.text_area(
+        "Paste your answer here (max 400 words):",
+        height=220
+    )
 
 # -------------------------
 # PROMPTS (LOCKED)
@@ -170,8 +176,7 @@ and briefly acknowledge and summarise the user's answer in one sentence without 
 """
 
 def suggestion_prompt():
-    print("level:", level)
-    if "Level 7" in level:
+    if level.lower().find("level 7") != -1:
         return f"""
 certification level: {level}
 Assessment criteria: {assessment}
