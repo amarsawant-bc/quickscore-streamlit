@@ -144,7 +144,39 @@ else:
 # PROMPTS (LOCKED)
 # -------------------------
 def validation_prompt():
-    return f"""
+    if level.lower().find("level 7") != -1:
+        return f"""
+certification level: {level}
+Assessment criteria: {assessment}
+Study unit: {study_unit}
+Question: {question}
+Submitted Answer: {answer}
+
+if submitted_answer is consist of more than 21 words then only do following if not then give output must be only
+'You are not quite on the right track. Submitted answer is not sufficient to do assessment. Please provide a more detailed answer'
+
+Considering the provided certification level, assessment criteria, study unit, and Submitted Answer, Evaluate the submitted answer.
+Please Do not give any suggestions for improvement.
+Evaluate Submitted answer for Chartered Institute of Personnel and Development (CIPD) certification level.
+Give response in British English.
+Give response without deviating from their original content.
+
+Does the Submitted Answer demonstrate sufficient knowledge, understanding, or skill as appropriate to meet the assessment criteria?
+Does at least one example included in Submitted Answer where required to support the answer?
+
+If the submitted answer is too brief or insufficient, respond with
+'The submitted answer is not sufficient to meet the assessment criteria. Please provide a more detailed answer.'
+
+If Yes then output must be only
+'You appear to be on the right track. Your answer aligns with the assessment criteria'
+and briefly acknowledge and summarise the user's answer in one sentence without evaluation.
+
+If No then output must be only
+'You are not quite on the right track yet. Your answer should align more with the assessment criteria'
+and briefly acknowledge and summarise the user's answer in one sentence without evaluation.
+"""
+    else:
+        return f"""
 certification level: {level}
 Assessment criteria: {assessment}
 Study unit: {study_unit}
