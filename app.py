@@ -27,6 +27,7 @@ import os
 import json
 import requests
 import streamlit as st
+import re
 from dotenv import load_dotenv
 
 # Load environment variables from .env file if it exists
@@ -139,6 +140,48 @@ else:
         "Paste your answer here (max 400 words):",
         height=220
     )
+
+def calculateWordCount(answer):
+  if not answer: return 0
+
+  totalWords = 0
+
+  if answer:
+    totalWords = extractCountableWords(answer)
+
+  return totalWords
+
+def extractCountableWords(text):
+    if not text or len(text.strip()) == 0: 
+        return 0
+
+    cleanText = text.strip()
+    cleanText = stripHtmlWithDOMParser(cleanText)
+    # Split by whitespace (spaces, newlines, tabs, etc.) and filter out empty strings
+    calculatedWords = [word.strip() for word in re.split(r'[\s\n\r\t]+', cleanText.strip()) if word.strip()]
+    return len(calculatedWords)
+
+def stripHtmlWithDOMParser(htmlString):
+    cleanText = htmlString.strip()
+    cleanText = cleanText.replace('</th>', '</th> ')
+    cleanText = cleanText.replace('</td>', '</td> ')
+    cleanText = cleanText.replace('</tr>', '</tr> ')
+    cleanText = cleanText.replace('</table>', '</table> ')
+    cleanText = cleanText.replace('<p', ' <p')
+    cleanText = cleanText.replace('</p>', '</p> ')
+    # Remove table tags including inner text so that tables are also removed
+    cleanText = re.sub(r'<table\b[^>]*>[\s\S]*?</table>', '', cleanText, flags=re.IGNORECASE)
+    # Remove <s> tags including inner text so that strikethrough text is also removed
+    cleanText = re.sub(r'<s\b[^>]*>[\s\S]*?</s>', '', cleanText, flags=re.IGNORECASE)
+    # Remove all tags and keep inner text
+    cleanText = re.sub(r'<[^>]+>', '', cleanText)
+    # Remove AC 1.5 from the beginning of the text
+    cleanText = re.sub(r'^AC\s?[1-9]\.[1-9]\s*', '', cleanText, flags=re.IGNORECASE)
+    cleanText = cleanText.replace('&nbsp;', ' ')
+    # Replace multiple whitespace with single space and trim
+    cleanText = re.sub(r'\s+', ' ', cleanText).strip()
+    return cleanText
+
 
 # -------------------------
 # PROMPTS (LOCKED)
@@ -319,7 +362,14 @@ if st.button("Submit"):
     with st.spinner("Evaluating submission..."):
         try:
             validation = call_azure_openai(validation_prompt())
+            st.subheader("Word Count Analysis")
+            st.text("Calculated word count: " + str(calculateWordCount(answer)) + " words")
+            if level.lower().find("level 7") != -1:
+                st.text("Acceptable Range (±10% tolerance): 900 - 1100 words") #1000 words ± 10% = 900 - 1100 words
+            else:
+                st.text("Acceptable Range (±10% tolerance): 360 - 440 words") #400 words ± 10% = 360 - 440 words
 
+            st.divider()
             st.subheader("Validation Result")
             st.text(validation)
 
