@@ -195,7 +195,7 @@ Study unit: {study_unit}
 Question: {question}
 Submitted Answer: {answer}
 
-if submitted_answer is consist of more than 21 words then only do following if not then give output must be only
+if submitted_answer is consist of more than 800 words then only do following if not then give output must be only
 'You are not quite on the right track. Submitted answer is not sufficient to do assessment. Please provide a more detailed answer'
 
 Considering the provided certification level, assessment criteria, study unit, and Submitted Answer, Evaluate the submitted answer.
@@ -204,18 +204,55 @@ Evaluate Submitted answer for Chartered Institute of Personnel and Development (
 Give response in British English.
 Give response without deviating from their original content.
 
-Does the Submitted Answer demonstrate sufficient knowledge, understanding, or skill as appropriate to meet the assessment criteria?
-Does at least one example included in Submitted Answer where required to support the answer?
+EVALUATION CRITERIA:
+Evaluate the submitted answer against the following criteria to determine if it demonstrates sufficient knowledge, understanding, or skill:
+
+1. Focus:
+   - Does the answer directly address the command verb used in the question (e.g. analyse, evaluate, explain)?
+   - Does it explicitly link each point back to the relevant assessment criteria?
+   - Does all content remain tightly focused on the question, with no drift or irrelevant sections?
+
+2. Depth & breadth of understanding:
+   - Does it develop points in sufficient depth rather than just listing information?
+   - Does it critically analyse points rather than simply listing models or theories?
+   - Does it expand and strengthen relevant arguments instead of introducing too many additional ones?
+
+3. Strategic application & professional advice:
+   - Does it clearly explain the organisational context relevant to the answer?
+   - Does it explicitly link theory to its practical impact on people practice?
+   - Does it clearly identify the strategic implications for the organisation?
+
+4. Research & wider reading:
+   - Does it support key points with relevant academic or professional sources?
+   - Does it integrate references directly into the argument, rather than listing them separately?
+   - Does it use recent evidence (from the last 5 years) to strengthen credibility and relevance?
+
+5. Persuasiveness & originality:
+   - Does it present a clear and convincing argument, supported by logical reasoning and evidence?
+   - Does it demonstrate independent thinking by critically evaluating ideas rather than simply describing them?
+   - Does it apply theory in an insightful way that strengthens the relevance and impact of the argument?
+
+6. Presentation & language:
+   - Is the text organised into three main parts: Introduction, Main Body, Conclusion?
+   - Does it use clear signposting to help the reader follow the argument?
+   - Does the conclusion clearly synthesise the key points?
+
+DECISION RULES:
+- The answer must meet ALL of the evaluation criteria listed above (Focus, Depth & breadth of understanding, Strategic application & professional advice, Research & wider reading, Persuasiveness & originality, and Presentation & language).
+- The answer must address the command verb and link points to assessment criteria (Focus).
+- The answer must demonstrate depth of understanding, not just surface-level listing.
+- The answer must include at least one example where required to support the answer.
+- The answer must not be too brief or insufficient.
 
 If the submitted answer is too brief or insufficient, respond with
 'The submitted answer is not sufficient to meet the assessment criteria. Please provide a more detailed answer.'
 
-If Yes then output must be only
-'You appear to be on the right track. Your answer aligns with the assessment criteria'
+If the answer meets ALL the evaluation criteria (addresses command verb, links to criteria, demonstrates understanding, includes examples where required, meets all 6 evaluation criteria, and is not too brief), then output must be only
+'You've made a good start. Here are some suggestions to help you further strengthen and refine your response.'
 and briefly acknowledge and summarise the user's answer in one sentence without evaluation.
 
-If No then output must be only
-'You are not quite on the right track yet. Your answer should align more with the assessment criteria'
+If the answer does not meet ALL the evaluation criteria, then output must be only
+'You are not yet on the right track. Here are some suggestions to help you strengthen and expand your response.'
 and briefly acknowledge and summarise the user's answer in one sentence without evaluation.
 """
     else:
@@ -270,25 +307,77 @@ Provide constructive feedback addressed directly to 'you'.
 Use British English.
 Do not use Markdown formatting.
 
-Here are some suggestions to improve your answer:
+EVALUATION FRAMEWORK:
+Evaluate the submitted answer against the following criteria and provide specific, actionable suggestions for improvement based on what you observe in the learner's response. For each criterion, assess whether the answer meets the standard described, and if not, provide specific suggestions on how to improve.
 
 1. Focus:
-    - Suggestion text here.
+   The answer should:
+   - Directly answer the command verb used in the question (e.g. analyse, evaluate, explain).
+   - Explicitly link each point back to the relevant assessment criteria.
+   - Ensure all content remains tightly focused on the question, with no drift or irrelevant sections.
+   
+   Provide specific suggestions based on what you observe in the submitted answer regarding focus.
 
 2. Depth & breadth of understanding:
-    - Suggestion text here.
+   The answer should:
+   - Develop a smaller number of points in greater depth.
+   - Critically analyse points rather than listing models or theories.
+   - Expand and strengthen the most relevant arguments instead of introducing additional ones.
+   
+   Provide specific suggestions based on what you observe in the submitted answer regarding depth and breadth.
 
 3. Strategic application & professional advice:
-    - Suggestion text here.
+   The answer should:
+   - Clearly explain the organisational context relevant to the answer.
+   - Explicitly link theory to its practical impact on people practice.
+   - Clearly identify the strategic implications for the organisation.
+   
+   Provide specific suggestions based on what you observe in the submitted answer regarding strategic application.
 
 4. Research & wider reading:
-    - Suggestion text here.
+   The answer should:
+   - Support key points with relevant academic or professional sources.
+   - Integrate references directly into the argument, rather than listing them separately.
+   - Use recent evidence (from the last 5 years) to strengthen credibility and relevance.
+   
+   Provide specific suggestions based on what you observe in the submitted answer regarding research and wider reading.
 
 5. Persuasiveness & originality:
-    - Suggestion text here.
+   The answer should:
+   - Present a clear and convincing argument, supported by logical reasoning and evidence.
+   - Demonstrate independent thinking by critically evaluating ideas rather than simply describing them.
+   - Apply theory in an insightful way that strengthens the relevance and impact of the argument.
+   
+   Provide specific suggestions based on what you observe in the submitted answer regarding persuasiveness and originality.
 
 6. Presentation & language:
-    - Suggestion text here.
+   The answer should:
+   - Be organised into three main parts: Introduction, Main Body, Conclusion.
+   - Use clear signposting to help the reader follow the argument.
+   - Ensure the conclusion clearly synthesises the key points.
+   
+   Provide specific suggestions based on what you observe in the submitted answer regarding presentation and language.
+
+OUTPUT FORMAT:
+Structure your response as follows, providing specific suggestions for each criterion where improvement is needed:
+
+1. Focus:
+   - [Your specific suggestion text here based on the submitted answer]
+
+2. Depth & breadth of understanding:
+   - [Your specific suggestion text here based on the submitted answer]
+
+3. Strategic application & professional advice:
+   - [Your specific suggestion text here based on the submitted answer]
+
+4. Research & wider reading:
+   - [Your specific suggestion text here based on the submitted answer]
+
+5. Persuasiveness & originality:
+   - [Your specific suggestion text here based on the submitted answer]
+
+6. Presentation & language:
+   - [Your specific suggestion text here based on the submitted answer]
 """
     else:
         return f"""
@@ -373,12 +462,12 @@ if st.button("Submit"):
             st.subheader("Validation Result")
             st.text(validation)
 
-            if validation.startswith("You appear to be on the right track"):
-                suggestions = call_azure_openai(suggestion_prompt())
+            # if validation.startswith("You appear to be on the right track"):
+            suggestions = call_azure_openai(suggestion_prompt())
 
-                st.divider()
-                st.subheader("Suggestions for Improvement")
-                st.text(suggestions)
+            st.divider()
+            st.subheader("Suggestions for Improvement")
+            st.text(suggestions)
         except requests.exceptions.RequestException as e:
             st.error(f"❌ **API Error:** Failed to connect to Azure OpenAI. Please check your endpoint and API key.")
             st.code(str(e))
