@@ -297,87 +297,40 @@ Question: {question}
 Submitted Answer: {answer}
 
 Using the provided certification level, Assessment criteria, Study unit, Question and Submitted Answer,
-offer some suggestions in brief for improvement in the Submitted Answer so that the submitted answer
-should align well with the assessment criteria.
-
-The learner is expected to provide their response as a written paragraph, using full sentences in an academic tone.
-They should not use bullet points or lists in their submitted answer.
+offer brief suggestions for improvement in the Submitted Answer. Keep feedback concise - only 1-2 sentences per point.
 
 Provide constructive feedback addressed directly to 'you'.
 Use British English.
 Do not use Markdown formatting.
 
-EVALUATION FRAMEWORK:
-Evaluate the submitted answer against the following criteria and provide specific, actionable suggestions for improvement based on what you observe in the learner's response. For each criterion, assess whether the answer meets the standard described, and if not, provide specific suggestions on how to improve.
+GENERIC TOP TIPS (include these where relevant):
+- Evaluate, Don't Describe: Focus on critical evaluation rather than mere description. Answer in line with the command verbs.
+- Use Recent Research: Ensure your references are from the last 10 years, except for classic theories.
+- Consider Both Sides: Discuss both advantages and disadvantages in your evaluations.
+- Support Claims with Evidence: Avoid making bold claims without solid evidence to back them up.
+
+SUGGESTIONS FOR IMPROVEMENT:
+Provide brief suggestions (1-2 sentences each) for the following areas where improvement is needed. Only include areas that need attention:
 
 1. Focus:
-   The answer should:
-   - Directly answer the command verb used in the question (e.g. analyse, evaluate, explain).
-   - Explicitly link each point back to the relevant assessment criteria.
-   - Ensure all content remains tightly focused on the question, with no drift or irrelevant sections.
-   
-   Provide specific suggestions based on what you observe in the submitted answer regarding focus.
+   [1-2 sentences on addressing the command verb and linking to assessment criteria]
 
 2. Depth & breadth of understanding:
-   The answer should:
-   - Develop a smaller number of points in greater depth.
-   - Critically analyse points rather than listing models or theories.
-   - Expand and strengthen the most relevant arguments instead of introducing additional ones.
-   
-   Provide specific suggestions based on what you observe in the submitted answer regarding depth and breadth.
+   [1-2 sentences on developing points in depth and critical analysis]
 
 3. Strategic application & professional advice:
-   The answer should:
-   - Clearly explain the organisational context relevant to the answer.
-   - Explicitly link theory to its practical impact on people practice.
-   - Clearly identify the strategic implications for the organisation.
-   
-   Provide specific suggestions based on what you observe in the submitted answer regarding strategic application.
+   [1-2 sentences on organisational context and linking theory to practice]
 
 4. Research & wider reading:
-   The answer should:
-   - Support key points with relevant academic or professional sources.
-   - Integrate references directly into the argument, rather than listing them separately.
-   - Use recent evidence (from the last 5 years) to strengthen credibility and relevance.
-   
-   Provide specific suggestions based on what you observe in the submitted answer regarding research and wider reading.
+   [1-2 sentences on supporting points with sources and using recent evidence]
 
 5. Persuasiveness & originality:
-   The answer should:
-   - Present a clear and convincing argument, supported by logical reasoning and evidence.
-   - Demonstrate independent thinking by critically evaluating ideas rather than simply describing them.
-   - Apply theory in an insightful way that strengthens the relevance and impact of the argument.
-   
-   Provide specific suggestions based on what you observe in the submitted answer regarding persuasiveness and originality.
+   [1-2 sentences on presenting a clear argument with independent thinking]
 
 6. Presentation & language:
-   The answer should:
-   - Be organised into three main parts: Introduction, Main Body, Conclusion.
-   - Use clear signposting to help the reader follow the argument.
-   - Ensure the conclusion clearly synthesises the key points.
-   
-   Provide specific suggestions based on what you observe in the submitted answer regarding presentation and language.
+   [1-2 sentences on structure (Introduction, Main Body, Conclusion) and signposting]
 
-OUTPUT FORMAT:
-Structure your response as follows, providing specific suggestions for each criterion where improvement is needed:
-
-1. Focus:
-   - [Your specific suggestion text here based on the submitted answer]
-
-2. Depth & breadth of understanding:
-   - [Your specific suggestion text here based on the submitted answer]
-
-3. Strategic application & professional advice:
-   - [Your specific suggestion text here based on the submitted answer]
-
-4. Research & wider reading:
-   - [Your specific suggestion text here based on the submitted answer]
-
-5. Persuasiveness & originality:
-   - [Your specific suggestion text here based on the submitted answer]
-
-6. Presentation & language:
-   - [Your specific suggestion text here based on the submitted answer]
+Keep each suggestion brief and actionable. Focus on the most important improvements needed.
 """
     else:
         return f"""
