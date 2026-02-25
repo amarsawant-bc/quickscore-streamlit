@@ -207,38 +207,37 @@ Give response without deviating from their original content.
 EVALUATION CRITERIA:
 Evaluate the submitted answer against the following criteria to determine if it demonstrates sufficient knowledge, understanding, or skill:
 
-1. Focus:
+1. Focus: atleast one of the following must be present:
    - Does the answer directly address the command verb used in the question (e.g. analyse, evaluate, explain)?
    - Does it explicitly link each point back to the relevant assessment criteria?
    - Does all content remain tightly focused on the question, with no drift or irrelevant sections?
 
-2. Depth & breadth of understanding:
+2. Depth & breadth of understanding: atleast one of the following must be present:
    - Does it develop points in sufficient depth rather than just listing information?
    - Does it critically analyse points rather than simply listing models or theories?
    - Does it expand and strengthen relevant arguments instead of introducing too many additional ones?
 
-3. Strategic application & professional advice:
+3. Strategic application & professional advice: atleast one of the following must be present:
    - Does it clearly explain the organisational context relevant to the answer?
    - Does it explicitly link theory to its practical impact on people practice?
    - Does it clearly identify the strategic implications for the organisation?
 
-4. Research & wider reading:
+4. Research & wider reading: atleast one of the following must be present:
    - Does it support key points with relevant academic or professional sources?
    - Does it integrate references directly into the argument, rather than listing them separately?
    - Does it use recent evidence (from the last 5 years) to strengthen credibility and relevance?
 
-5. Persuasiveness & originality:
+5. Persuasiveness & originality: atleast one of the following must be present:
    - Does it present a clear and convincing argument, supported by logical reasoning and evidence?
    - Does it demonstrate independent thinking by critically evaluating ideas rather than simply describing them?
    - Does it apply theory in an insightful way that strengthens the relevance and impact of the argument?
 
-6. Presentation & language:
-   - Is the text organised into three main parts: Introduction, Main Body, Conclusion?
+6. Presentation & language: atleast one of the following must be present:
    - Does it use clear signposting to help the reader follow the argument?
    - Does the conclusion clearly synthesise the key points?
 
 DECISION RULES:
-- The answer must meet ALL of the evaluation criteria listed above (Focus, Depth & breadth of understanding, Strategic application & professional advice, Research & wider reading, Persuasiveness & originality, and Presentation & language).
+- The answer must meet atleast one of the evaluation criteria listed above.
 - The answer must address the command verb and link points to assessment criteria (Focus).
 - The answer must demonstrate depth of understanding, not just surface-level listing.
 - The answer must include at least one example where required to support the answer.
@@ -247,7 +246,7 @@ DECISION RULES:
 If the submitted answer is too brief or insufficient, respond with
 'The submitted answer is not sufficient to meet the assessment criteria. Please provide a more detailed answer.'
 
-If the answer meets ALL the evaluation criteria (addresses command verb, links to criteria, demonstrates understanding, includes examples where required, meets all 6 evaluation criteria, and is not too brief), then output must be only
+If the answer meets ALL the evaluation criteria, then output must be only
 'You've made a good start. Here are some suggestions to help you further strengthen and refine your response.'
 and briefly acknowledge and summarise the user's answer in one sentence without evaluation.
 
@@ -302,15 +301,6 @@ offer brief suggestions for improvement in the Submitted Answer. Keep feedback c
 Provide constructive feedback addressed directly to 'you'.
 Use British English.
 Do not use Markdown formatting.
-
-GENERIC TOP TIPS (include these where relevant):
-- Evaluate, Don't Describe: Focus on critical evaluation rather than mere description. Answer in line with the command verbs.
-- Use Recent Research: Ensure your references are from the last 10 years, except for classic theories.
-- Consider Both Sides: Discuss both advantages and disadvantages in your evaluations.
-- Support Claims with Evidence: Avoid making bold claims without solid evidence to back them up.
-
-SUGGESTIONS FOR IMPROVEMENT:
-Provide brief suggestions (1-2 sentences each) for the following areas where improvement is needed. Only include areas that need attention:
 
 1. Focus:
    [1-2 sentences on addressing the command verb and linking to assessment criteria]
@@ -404,7 +394,7 @@ if st.button("Submit"):
     with st.spinner("Evaluating submission..."):
         try:
             validation = call_azure_openai(validation_prompt())
-            st.subheader("Word Count Analysis")
+            st.subheader("Word Count")
             st.text("Calculated word count: " + str(calculateWordCount(answer)) + " words")
             if level.lower().find("level 7") != -1:
                 st.text("Acceptable Range (±10% tolerance): 900 - 1100 words") #1000 words ± 10% = 900 - 1100 words
@@ -412,7 +402,7 @@ if st.button("Submit"):
                 st.text("Acceptable Range (±10% tolerance): 360 - 440 words") #400 words ± 10% = 360 - 440 words
 
             st.divider()
-            st.subheader("Validation Result")
+            st.subheader("Feedback Summary")
             st.text(validation)
 
             # if validation.startswith("You appear to be on the right track"):
@@ -421,6 +411,18 @@ if st.button("Submit"):
             st.divider()
             st.subheader("Suggestions for Improvement")
             st.text(suggestions)
+
+            if level.lower().find("level 7") != -1:
+                st.markdown("")  # Add spacing before disclaimer
+                st.markdown(""" 
+                <b>Remember to:</b>
+                <ul>
+                    <li><b>Evaluate, don't describe:</b> Focus on critical evaluation rather than mere description. Answer in line with the command verbs.</li>
+                    <li><b>Use recent research:</b> Ensure your references are from the last 5 years, except for classic theories.</li>
+                    <li><b>Consider both sides:</b> Discuss both advantages and disadvantages in your evaluations, where appropriate.</li>
+                    <li><b>Support claims with evidence:</b> Avoid making bold claims without solid evidence to back them up.</li>
+                </ul>
+                """, unsafe_allow_html=True)
         except requests.exceptions.RequestException as e:
             st.error(f"❌ **API Error:** Failed to connect to Azure OpenAI. Please check your endpoint and API key.")
             st.code(str(e))
@@ -430,8 +432,12 @@ if st.button("Submit"):
 # -------------------------
 # DISCLAIMER
 # -------------------------
+st.markdown("")  # Add spacing before disclaimer
 st.markdown("""
-**Disclaimer:**  
-QuickScore feedback is designed to support learning and does not replace tutor assessment or grading decisions.
-Always refer to the official CIPD assessment brief and grading criteria.
-""")
+<small>
+<i>
+<b>Disclaimer:</b>  
+QuickScore feedback is designed to support learning and does not replace tutor assessment or grading decisions. Always refer to the official CIPD assessment brief and grading criteria.
+</i>
+</small>
+""", unsafe_allow_html=True)
