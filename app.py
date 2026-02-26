@@ -100,8 +100,8 @@ def call_azure_openai(prompt: str) -> str:
     response.raise_for_status()
     return response.json()["choices"][0]["message"]["content"].strip()
 
-# validation prompt for summary feedback
-def summary_feedback_prompt():
+# feedback summary prompt
+def feedback_summary_prompt():
     return f"""
 if submitted_answer is consist of more than 800 words then only do following if not then give output must be only
 'You are not quite on the right track. Submitted answer is not sufficient to do assessment. Please provide a more detailed answer'
@@ -192,9 +192,9 @@ if assessment:
     st.text_area("Question:", question, height=120, disabled=True)
 
 if level.lower().find("level 7") != -1:
-    validation_prompt_text = st.text_area(
-        "Summary Feedback Prompt:",
-        value=summary_feedback_prompt(),
+    feedback_summary_prompt_text = st.text_area(
+        "Feedback Summary Prompt:",
+        value=feedback_summary_prompt(),
         height=220
     )
     answer = st.text_area(
@@ -261,7 +261,7 @@ Study unit: {study_unit}
 Question: {question}
 Submitted Answer: {answer}
 
-{validation_prompt_text}
+{feedback_summary_prompt_text}
 """
     else:
         return f"""
