@@ -100,6 +100,67 @@ def call_azure_openai(prompt: str) -> str:
     response.raise_for_status()
     return response.json()["choices"][0]["message"]["content"].strip()
 
+# validation prompt for summary feedback
+def summary_feedback_prompt():
+    return f"""
+if submitted_answer is consist of more than 800 words then only do following if not then give output must be only
+'You are not quite on the right track. Submitted answer is not sufficient to do assessment. Please provide a more detailed answer'
+
+Considering the provided certification level, assessment criteria, study unit, and Submitted Answer, Evaluate the submitted answer.
+Please Do not give any suggestions for improvement.
+Evaluate Submitted answer for Chartered Institute of Personnel and Development (CIPD) certification level.
+Give response in British English.
+Give response without deviating from their original content.
+
+EVALUATION CRITERIA:
+Evaluate the submitted answer against the following criteria to determine if it demonstrates sufficient knowledge, understanding, or skill:
+
+1. Focus: atleast one of the following must be present:
+   - Does the answer directly address the command verb used in the question (e.g. analyse, evaluate, explain)?
+   - Does it explicitly link each point back to the relevant assessment criteria?
+   - Does all content remain tightly focused on the question, with no drift or irrelevant sections?
+
+2. Depth & breadth of understanding: atleast one of the following must be present:
+   - Does it develop points in sufficient depth rather than just listing information?
+   - Does it critically analyse points rather than simply listing models or theories?
+   - Does it expand and strengthen relevant arguments instead of introducing too many additional ones?
+
+3. Strategic application & professional advice: atleast one of the following must be present:
+   - Does it clearly explain the organisational context relevant to the answer?
+   - Does it explicitly link theory to its practical impact on people practice?
+   - Does it clearly identify the strategic implications for the organisation?
+
+4. Research & wider reading: atleast one of the following must be present:
+   - Does it support key points with relevant academic or professional sources?
+   - Does it integrate references directly into the argument, rather than listing them separately?
+   - Does it use recent evidence (from the last 5 years) to strengthen credibility and relevance?
+
+5. Persuasiveness & originality: atleast one of the following must be present:
+   - Does it present a clear and convincing argument, supported by logical reasoning and evidence?
+   - Does it demonstrate independent thinking by critically evaluating ideas rather than simply describing them?
+   - Does it apply theory in an insightful way that strengthens the relevance and impact of the argument?
+
+6. Presentation & language: atleast one of the following must be present:
+   - Is the text organised into three main parts: Introduction, Main Body, Conclusion?
+   - Does it use clear signposting to help the reader follow the argument?
+   - Does the conclusion clearly synthesise the key points?
+
+DECISION RULES:
+- The answer must meet atleast 4 out of 6 evaluation criteria listed above.
+- The answer must address the command verb and link points to assessment criteria (Focus).
+- The answer must demonstrate depth of understanding, not just surface-level listing.
+- The answer must include at least one example where required to support the answer.
+- The answer must not be too brief or insufficient.
+
+If the answer meets atleast 4 out of 6 evaluation criteria, then output must be only
+'You've made a good start. Here are some suggestions to help you further strengthen and refine your response.'
+and briefly acknowledge and summarise the user's answer in one sentence without evaluation.
+
+If the answer does not meet atleast 4 out of 6 evaluation criteria, then output must be only
+'You are not yet on the right track. Here are some suggestions to help you strengthen and expand your response.'
+and briefly acknowledge and summarise the user's answer in one sentence without evaluation.
+"""
+
 # -------------------------
 # UI INPUTS
 # -------------------------
@@ -131,6 +192,11 @@ if assessment:
     st.text_area("Question:", question, height=120, disabled=True)
 
 if level.lower().find("level 7") != -1:
+    validation_prompt_text = st.text_area(
+        "Summary Feedback Prompt:",
+        value=summary_feedback_prompt(),
+        height=220
+    )
     answer = st.text_area(
         "Paste your answer here (max 1000 words):",
         height=220
@@ -195,64 +261,7 @@ Study unit: {study_unit}
 Question: {question}
 Submitted Answer: {answer}
 
-if submitted_answer is consist of more than 800 words then only do following if not then give output must be only
-'You are not quite on the right track. Submitted answer is not sufficient to do assessment. Please provide a more detailed answer'
-
-Considering the provided certification level, assessment criteria, study unit, and Submitted Answer, Evaluate the submitted answer.
-Please Do not give any suggestions for improvement.
-Evaluate Submitted answer for Chartered Institute of Personnel and Development (CIPD) certification level.
-Give response in British English.
-Give response without deviating from their original content.
-
-EVALUATION CRITERIA:
-Evaluate the submitted answer against the following criteria to determine if it demonstrates sufficient knowledge, understanding, or skill:
-
-1. Focus: atleast one of the following must be present:
-   - Does the answer directly address the command verb used in the question (e.g. analyse, evaluate, explain)?
-   - Does it explicitly link each point back to the relevant assessment criteria?
-   - Does all content remain tightly focused on the question, with no drift or irrelevant sections?
-
-2. Depth & breadth of understanding: atleast one of the following must be present:
-   - Does it develop points in sufficient depth rather than just listing information?
-   - Does it critically analyse points rather than simply listing models or theories?
-   - Does it expand and strengthen relevant arguments instead of introducing too many additional ones?
-
-3. Strategic application & professional advice: atleast one of the following must be present:
-   - Does it clearly explain the organisational context relevant to the answer?
-   - Does it explicitly link theory to its practical impact on people practice?
-   - Does it clearly identify the strategic implications for the organisation?
-
-4. Research & wider reading: atleast one of the following must be present:
-   - Does it support key points with relevant academic or professional sources?
-   - Does it integrate references directly into the argument, rather than listing them separately?
-   - Does it use recent evidence (from the last 5 years) to strengthen credibility and relevance?
-
-5. Persuasiveness & originality: atleast one of the following must be present:
-   - Does it present a clear and convincing argument, supported by logical reasoning and evidence?
-   - Does it demonstrate independent thinking by critically evaluating ideas rather than simply describing them?
-   - Does it apply theory in an insightful way that strengthens the relevance and impact of the argument?
-
-6. Presentation & language: atleast one of the following must be present:
-   - Does it use clear signposting to help the reader follow the argument?
-   - Does the conclusion clearly synthesise the key points?
-
-DECISION RULES:
-- The answer must meet atleast one of the evaluation criteria listed above.
-- The answer must address the command verb and link points to assessment criteria (Focus).
-- The answer must demonstrate depth of understanding, not just surface-level listing.
-- The answer must include at least one example where required to support the answer.
-- The answer must not be too brief or insufficient.
-
-If the submitted answer is too brief or insufficient, respond with
-'The submitted answer is not sufficient to meet the assessment criteria. Please provide a more detailed answer.'
-
-If the answer meets ALL the evaluation criteria, then output must be only
-'You've made a good start. Here are some suggestions to help you further strengthen and refine your response.'
-and briefly acknowledge and summarise the user's answer in one sentence without evaluation.
-
-If the answer does not meet ALL the evaluation criteria, then output must be only
-'You are not yet on the right track. Here are some suggestions to help you strengthen and expand your response.'
-and briefly acknowledge and summarise the user's answer in one sentence without evaluation.
+{validation_prompt_text}
 """
     else:
         return f"""
@@ -302,6 +311,7 @@ Provide constructive feedback addressed directly to 'you'.
 Use British English.
 Do not use Markdown formatting.
 
+Evaluation criteria:
 1. Focus:
    [1-2 sentences on addressing the command verb and linking to assessment criteria]
 
