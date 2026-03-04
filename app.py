@@ -104,7 +104,7 @@ def call_azure_openai(prompt: str) -> str:
 def feedback_summary_prompt():
     return f"""
 if submitted_answer is consist of more than 800 words then only do following if not then give output must be only
-'You are not quite on the right track. Submitted answer is not sufficient to do assessment. Please provide a more detailed answer'
+'You're not quite on the right track yet. Please consider the suggestions below and revise your response.'
 
 Considering the provided certification level, assessment criteria, study unit, and Submitted Answer, Evaluate the submitted answer.
 Please Do not give any suggestions for improvement.
@@ -272,7 +272,7 @@ Question: {question}
 Submitted Answer: {answer}
 
 if submitted_answer is consist of more than 21 words then only do following if not then give output must be only
-'You are not quite on the right track. Submitted answer is not sufficient to do assessment. Please provide a more detailed answer'
+'You're not quite on the right track yet. Please consider the suggestions below and revise your response.'
 
 Considering the provided certification level, assessment criteria, study unit, and Submitted Answer, Evaluate the submitted answer.
 Please Do not give any suggestions for improvement.
@@ -306,6 +306,9 @@ Submitted Answer: {answer}
 
 Using the provided certification level, Assessment criteria, Study unit, Question and Submitted Answer,
 offer brief suggestions for improvement in the Submitted Answer. Keep feedback concise - only 1-2 sentences per point.
+
+The learner is expected to provide their response as a written paragraph, using full sentences in an academic tone.
+They should not use bullet points or lists in their submitted answer.
 
 Provide constructive feedback addressed directly to 'you'.
 Use British English.
@@ -431,6 +434,15 @@ if st.button("Submit"):
                     <li><b>Use recent research:</b> Ensure your references are from the last 5 years, except for classic theories.</li>
                     <li><b>Consider both sides:</b> Discuss both advantages and disadvantages in your evaluations, where appropriate.</li>
                     <li><b>Support claims with evidence:</b> Avoid making bold claims without solid evidence to back them up.</li>
+                </ul>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                <b>Remember to:</b>
+                <ul>
+                    <li>Address the command verb (e.g. evaluate, assess, analyse) used in the question.</li>
+                    <li>Include at least one credible reference to support your response.</li>
+                    <li>Apply your answer directly to the case study provided.</li>
                 </ul>
                 """, unsafe_allow_html=True)
         except requests.exceptions.RequestException as e:
