@@ -250,9 +250,56 @@ def stripHtmlWithDOMParser(htmlString):
 
 
 # -------------------------
-# PROMPTS (LOCKED)
+# Validation prompt
 # -------------------------
 def validation_prompt():
+    validation_criteria = ""
+    minimum_criteria = ""
+    if level.lower().find("level 3") != -1:
+        minimum_criteria = "2 out of 3"
+        validation_criteria = f"""
+1. Presentation: atleast one of the following must be present:
+   - Is the answer presented in an appropriate structure?
+   - Is the answer easy to read and to make sense of?
+   - Is the formatting of the text appropriate?
+
+2. Response to question: atleast one of the following must be present:
+   - Does the answer address the commend verb outlined in the question?
+   - Does the answers demonstrate sufficient knowledge and understanding to meet the assessment criteria question?
+
+3. ReferenceToTheScenario: atleast one of the following must be present:
+   - Is the answer applied to the case organisation outlined on the assessment brief?
+   - Does the answer relate to the context of the scenario?
+        """
+    elif level.lower().find("level 5") != -1:
+        minimum_criteria = "4 out of 5"
+        validation_criteria = f"""
+1. Referencing: atleast one of the following must be present:
+   - Are intext citations present?
+   - Do they align with the reference list if there is one. If no reference list present advice should be offered on this in terms of reminding the learner to do it before they submit?
+   - Are they formatted using the Harvard referencing system?
+   - Is the formatting of all in text citations consistent?
+
+2. Presentation: atleast one of the following must be present:
+   - Is the answer presented in an appropriate structure?
+   - Is the answer easy to read and to make sense of?
+   - Is the formatting of the text appropriate?
+
+3. WiderReading: atleast one of the following must be present:
+   - Does the answers include evidence of wider reading?
+   - Are the sources cited of a good quality eg from recognised textbooks, published sources, academic papers?
+   - Are the sources cited from within the last five years?
+   - Are they used to support the arguments developed?
+
+4. ReferenceToTheScenario: atleast one of the following must be present:
+   - Is the answer applied to the case organisation outlined on the assessment brief?
+   - Does the answer relate to the context of the scenario?
+
+5. Response to question: atleast one of the following must be present:
+   - Does the answer address the commend verb outlined in the question?
+   - Does the answers demonstrate sufficient knowledge and understanding to meet the assessment criteria question?
+        """
+
     if level.lower().find("level 7") != -1:
         return f"""
 certification level: {level}
@@ -280,22 +327,81 @@ Evaluate Submitted answer for Chartered Institute of Personnel and Development (
 Give response in British English.
 Give response without deviating from their original content.
 
-Does the Submitted Answer demonstrate sufficient knowledge, understanding, or skill as appropriate to meet the assessment criteria?
-Does at least one example included in Submitted Answer where required to support the answer?
+EVALUATION CRITERIA:
+Evaluate the submitted answer against the following criteria to determine if it demonstrates sufficient knowledge, understanding, or skill:
 
-If the submitted answer is too brief or insufficient, respond with
-'The submitted answer is not sufficient to meet the assessment criteria. Please provide a more detailed answer.'
+{validation_criteria}
 
-If Yes then output must be only
-'You appear to be on the right track. Your answer aligns with the assessment criteria'
+DECISION RULES:
+- The answer must meet atleast {minimum_criteria} evaluation criteria listed above.
+- The answer must address the command verb and link points to assessment criteria (Focus).
+- The answer must demonstrate depth of understanding, not just surface-level listing.
+- The answer must include at least one example where required to support the answer.
+- The answer must not be too brief or insufficient.
+
+If the answer meets atleast {minimum_criteria} evaluation criteria, then output must be only
+'You've made a good start. Here are some suggestions to help you further strengthen and refine your response.'
 and briefly acknowledge and summarise the user's answer in one sentence without evaluation.
 
-If No then output must be only
-'You are not quite on the right track yet. Your answer should align more with the assessment criteria'
+If the answer does not meet atleast {minimum_criteria} evaluation criteria, then output must be only
+'You are not yet on the right track. Here are some suggestions to help you strengthen and expand your response.'
 and briefly acknowledge and summarise the user's answer in one sentence without evaluation.
 """
 
+#
+# Suggestion prompt
+#
 def suggestion_prompt():
+    suggestion_prompt = ""
+    if level.lower().find("level 3") != -1:
+        suggestion_prompt = f"""
+1. Presentation:
+   [1-2 sentences on whether the answer has appropriate structure, is easy to read and make sense of, and has appropriate formatting]
+
+2. Response to question:
+   [1-2 sentences on whether the answer addresses the command verb outlined in the question and demonstrates sufficient knowledge and understanding to meet the assessment criteria]
+
+3. ReferenceToTheScenario:
+   [1-2 sentences on whether the answer is applied to the case organisation outlined in the assessment brief and relates to the context of the scenario]
+"""
+    elif level.lower().find("level 5") != -1:
+        suggestion_prompt = f"""
+1. Referencing:
+   [1-2 sentences on whether in-text citations are present, align with the reference list (or advise adding a reference list if absent), use Harvard formatting, and are consistent]
+
+2. Presentation:
+   [1-2 sentences on whether the answer has appropriate structure, is easy to read and make sense of, and has appropriate formatting]
+
+3. WiderReading:
+   [1-2 sentences on whether the answer includes evidence of wider reading, uses good-quality sources (e.g. recognised textbooks, published or academic sources), uses sources from the last five years, and uses them to support the arguments developed]
+
+4. ReferenceToTheScenario:
+   [1-2 sentences on whether the answer is applied to the case organisation outlined in the assessment brief and relates to the context of the scenario]
+
+5. Response to question:
+   [1-2 sentences on whether the answer addresses the command verb outlined in the question and demonstrates sufficient knowledge and understanding to meet the assessment criteria]
+"""
+    elif level.lower().find("level 7") != -1:
+        suggestion_prompt = f"""
+1. Focus:
+   [1-2 sentences on addressing the command verb and linking to assessment criteria]
+
+2. Depth & breadth of understanding:
+   [1-2 sentences on developing points in depth and critical analysis]
+
+3. Strategic application & professional advice:
+   [1-2 sentences on organisational context and linking theory to practice]
+
+4. Research & wider reading:
+   [1-2 sentences on supporting points with sources and using recent evidence]
+
+5. Persuasiveness & originality:
+   [1-2 sentences on presenting a clear argument with independent thinking]
+
+6. Presentation & language:
+   [1-2 sentences on structure (Introduction, Main Body, Conclusion) and signposting]
+"""
+    
     if level.lower().find("level 7") != -1:
         return f"""
 certification level: {level}
@@ -315,23 +421,7 @@ Use British English.
 Do not use Markdown formatting.
 
 Evaluation criteria:
-1. Focus:
-   [1-2 sentences on addressing the command verb and linking to assessment criteria]
-
-2. Depth & breadth of understanding:
-   [1-2 sentences on developing points in depth and critical analysis]
-
-3. Strategic application & professional advice:
-   [1-2 sentences on organisational context and linking theory to practice]
-
-4. Research & wider reading:
-   [1-2 sentences on supporting points with sources and using recent evidence]
-
-5. Persuasiveness & originality:
-   [1-2 sentences on presenting a clear argument with independent thinking]
-
-6. Presentation & language:
-   [1-2 sentences on structure (Introduction, Main Body, Conclusion) and signposting]
+{suggestion_prompt}
 
 Keep each suggestion brief and actionable. Focus on the most important improvements needed.
 """
@@ -344,8 +434,7 @@ Question: {question}
 Submitted Answer: {answer}
 
 Using the provided certification level, Assessment criteria, Study unit, Question and Submitted Answer,
-offer some suggestions in brief for improvement in the Submitted Answer so that the submitted answer
-should align well with the assessment criteria.
+offer brief suggestions for improvement in the Submitted Answer. Keep feedback concise - only 1-2 sentences per point.
 
 The learner is expected to provide their response as a written paragraph, using full sentences in an academic tone.
 They should not use bullet points or lists in their submitted answer.
@@ -354,25 +443,10 @@ Provide constructive feedback addressed directly to 'you'.
 Use British English.
 Do not use Markdown formatting.
 
-Here are some suggestions to improve your answer:
+Evaluation criteria:
+{suggestion_prompt}
 
-1. Command verb identification:
-    - Suggestion text here.
-
-2. Answer structure:
-    - Suggestion text here.
-
-3. Coherence and clarity:
-    - Suggestion text here.
-
-4. Evidence and examples:
-    - Suggestion text here.
-
-5. Grammar and style:
-    - Suggestion text here.
-
-6. Feedback summary:
-    - Suggestion text here.
+Keep each suggestion brief and actionable. Focus on the most important improvements needed.
 """
 
 # -------------------------
@@ -409,6 +483,8 @@ if st.button("Submit"):
             validation = call_azure_openai(validation_prompt())
             st.subheader("Word Count")
             st.text("Calculated word count: " + str(calculateWordCount(answer)) + " words")
+            # print("validation_prompt=====", validation_prompt())
+            # print("suggestion_prompt=====", suggestion_prompt())
             if level.lower().find("level 7") != -1:
                 st.text("Acceptable Range (±10% tolerance): 900 - 1100 words") #1000 words ± 10% = 900 - 1100 words
             else:
