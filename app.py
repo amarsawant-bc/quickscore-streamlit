@@ -420,7 +420,7 @@ Provide constructive feedback addressed directly to 'you'.
 Use British English.
 Do not use Markdown formatting.
 
-Evaluation criteria:
+Evaluation criteria as below:
 {suggestion_prompt}
 
 Keep each suggestion brief and actionable. Focus on the most important improvements needed.
@@ -443,7 +443,7 @@ Provide constructive feedback addressed directly to 'you'.
 Use British English.
 Do not use Markdown formatting.
 
-Evaluation criteria:
+Evaluation criteria as below:
 {suggestion_prompt}
 
 Keep each suggestion brief and actionable. Focus on the most important improvements needed.
