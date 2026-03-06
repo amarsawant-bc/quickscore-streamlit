@@ -423,6 +423,12 @@ Do not use Markdown formatting.
 Evaluation criteria as below:
 {suggestion_prompt}
 
+Output format rules:
+- Return feedback in the exact same numbered structure and order as the evaluation criteria above.
+- For each numbered point, start with the criterion heading exactly as shown (e.g. `1. Presentation:`) followed by your 1-2 sentence feedback on the same line.
+- Provide exactly 1-2 sentences for each numbered point.
+- Do not add an overall summary, introduction, conclusion, or any extra text outside the numbered points.
+
 Keep each suggestion brief and actionable. Focus on the most important improvements needed.
 """
     else:
@@ -445,6 +451,12 @@ Do not use Markdown formatting.
 
 Evaluation criteria as below:
 {suggestion_prompt}
+
+Output format rules:
+- Return feedback in the exact same numbered structure and order as the evaluation criteria above.
+- For each numbered point, start with the criterion heading exactly as shown (e.g. `1. Presentation:`) followed by your 1-2 sentence feedback on the same line.
+- Provide exactly 1-2 sentences for each numbered point.
+- Do not add an overall summary, introduction, conclusion, or any extra text outside the numbered points.
 
 Keep each suggestion brief and actionable. Focus on the most important improvements needed.
 """
