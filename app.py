@@ -461,6 +461,20 @@ Output format rules:
 Keep each suggestion brief and actionable. Focus on the most important improvements needed.
 """
 
+def get_icon(calculated_word_count, level):
+    word_count = 400
+    if level.lower().find("level 7") != -1:
+        word_count = 1000
+    
+    min_word_count = word_count * 0.9
+    max_word_count = word_count * 1.1
+    if calculated_word_count < min_word_count:
+        return f"<span style='color: #F59E0B;'>{calculated_word_count} words ⚠️</span>"
+    elif calculated_word_count > max_word_count:
+        return f"<span style='color: #F59E0B;'>{calculated_word_count} words ⚠️</span>"
+    else:
+        return f"<span style='color: green;'>{calculated_word_count} words ✅</span>"
+
 # -------------------------
 # CONFIGURATION CHECK
 # -------------------------
@@ -494,7 +508,7 @@ if st.button("Submit"):
         try:
             validation = call_azure_openai(validation_prompt())
             st.subheader("Word Count")
-            st.text("Calculated word count: " + str(calculateWordCount(answer)) + " words")
+            st.markdown(f""" Calculated Word Count: {get_icon(calculateWordCount(answer), level)} """, unsafe_allow_html=True)
             # print("validation_prompt=====", validation_prompt())
             # print("suggestion_prompt=====", suggestion_prompt())
             if level.lower().find("level 7") != -1:
