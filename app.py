@@ -267,7 +267,7 @@ def validation_prompt():
    - Does the answer address the commend verb outlined in the question?
    - Does the answers demonstrate sufficient knowledge and understanding to meet the assessment criteria question?
 
-3. ReferenceToTheScenario: atleast one of the following must be present:
+3. Reference To The Scenario: atleast one of the following must be present:
    - Is the answer applied to the case organisation outlined on the assessment brief?
    - Does the answer relate to the context of the scenario?
         """
@@ -285,13 +285,13 @@ def validation_prompt():
    - Is the answer easy to read and to make sense of?
    - Is the formatting of the text appropriate?
 
-3. WiderReading: atleast one of the following must be present:
+3. Wider Reading: atleast one of the following must be present:
    - Does the answers include evidence of wider reading?
    - Are the sources cited of a good quality eg from recognised textbooks, published sources, academic papers?
    - Are the sources cited from within the last five years?
    - Are they used to support the arguments developed?
 
-4. ReferenceToTheScenario: atleast one of the following must be present:
+4. Reference To The Scenario: atleast one of the following must be present:
    - Is the answer applied to the case organisation outlined on the assessment brief?
    - Does the answer relate to the context of the scenario?
 
@@ -361,7 +361,7 @@ def suggestion_prompt():
 2. Response to question:
    [1-2 sentences on whether the answer addresses the command verb outlined in the question and demonstrates sufficient knowledge and understanding to meet the assessment criteria]
 
-3. ReferenceToTheScenario:
+3. Reference To The Scenario:
    [1-2 sentences on whether the answer is applied to the case organisation outlined in the assessment brief and relates to the context of the scenario]
 """
     elif level.lower().find("level 5") != -1:
@@ -372,10 +372,10 @@ def suggestion_prompt():
 2. Presentation:
    [1-2 sentences on whether the answer has appropriate structure, is easy to read and make sense of, and has appropriate formatting]
 
-3. WiderReading:
-   [1-2 sentences on whether the answer includes evidence of wider reading, uses good-quality sources (e.g. recognised textbooks, published or academic sources), uses sources from the last five years, and uses them to support the arguments developed]
+3. Wider Reading:
+   [1-2 sentences on whether the answer includes evidence of wider reading, uses good-quality sources (e.g. recognised textbooks, published or academic sources), uses sources from the last five years, and uses them to support the arguments developed. If the question specifies a particular model or framework, do not suggest that additional models need to be explored.]
 
-4. ReferenceToTheScenario:
+4. Reference To The Scenario:
    [1-2 sentences on whether the answer is applied to the case organisation outlined in the assessment brief and relates to the context of the scenario]
 
 5. Response to question:
@@ -402,8 +402,7 @@ def suggestion_prompt():
    [1-2 sentences on structure (Introduction, Main Body, Conclusion) and signposting]
 """
     
-    if level.lower().find("level 7") != -1:
-        return f"""
+    return f"""
 certification level: {level}
 Assessment criteria: {assessment}
 Study unit: {study_unit}
@@ -429,51 +428,9 @@ Output format rules:
 - Provide exactly 1-2 sentences for each numbered point.
 - Do not add an overall summary, introduction, conclusion, or any extra text outside the numbered points.
 
+Make sure suggestions for improvement are written as clear, single paragraphs rather than long run-on text.
 Keep each suggestion brief and actionable. Focus on the most important improvements needed.
 """
-    else:
-        return f"""
-certification level: {level}
-Assessment criteria: {assessment}
-Study unit: {study_unit}
-Question: {question}
-Submitted Answer: {answer}
-
-Using the provided certification level, Assessment criteria, Study unit, Question and Submitted Answer,
-offer brief suggestions for improvement in the Submitted Answer. Keep feedback concise - only 1-2 sentences per point.
-
-The learner is expected to provide their response as a written paragraph, using full sentences in an academic tone.
-They should not use bullet points or lists in their submitted answer.
-
-Provide constructive feedback addressed directly to 'you'.
-Use British English.
-Do not use Markdown formatting.
-
-Evaluation criteria as below:
-{suggestion_prompt}
-
-Output format rules:
-- Return feedback in the exact same numbered structure and order as the evaluation criteria above.
-- For each numbered point, start with the criterion heading exactly as shown (e.g. `1. Presentation:`) followed by your 1-2 sentence feedback on the same line.
-- Provide exactly 1-2 sentences for each numbered point.
-- Do not add an overall summary, introduction, conclusion, or any extra text outside the numbered points.
-
-Keep each suggestion brief and actionable. Focus on the most important improvements needed.
-"""
-
-def get_icon(calculated_word_count, level):
-    word_count = 400
-    if level.lower().find("level 7") != -1:
-        word_count = 1000
-    
-    min_word_count = word_count * 0.9
-    max_word_count = word_count * 1.1
-    if calculated_word_count < min_word_count:
-        return f"<span style='color: #F59E0B;'>{calculated_word_count} words ⚠️</span>"
-    elif calculated_word_count > max_word_count:
-        return f"<span style='color: #F59E0B;'>{calculated_word_count} words ⚠️</span>"
-    else:
-        return f"<span style='color: green;'>{calculated_word_count} words ✅</span>"
 
 # -------------------------
 # CONFIGURATION CHECK
@@ -508,13 +465,9 @@ if st.button("Submit"):
         try:
             validation = call_azure_openai(validation_prompt())
             st.subheader("Word Count")
-            st.markdown(f""" Calculated Word Count: {get_icon(calculateWordCount(answer), level)} """, unsafe_allow_html=True)
+            st.markdown(f""" Calculated Word Count: {calculateWordCount(answer)} """, unsafe_allow_html=True)
             # print("validation_prompt=====", validation_prompt())
             # print("suggestion_prompt=====", suggestion_prompt())
-            if level.lower().find("level 7") != -1:
-                st.text("Acceptable Range (±10% tolerance): 900 - 1100 words") #1000 words ± 10% = 900 - 1100 words
-            else:
-                st.text("Acceptable Range (±10% tolerance): 360 - 440 words") #400 words ± 10% = 360 - 440 words
 
             st.divider()
             st.subheader("Feedback Summary")
@@ -527,24 +480,37 @@ if st.button("Submit"):
             st.subheader("Suggestions for Improvement")
             st.text(suggestions)
 
-            if level.lower().find("level 7") != -1:
+            if level.lower().find("level 3") != -1:
                 st.markdown("")  # Add spacing before disclaimer
                 st.markdown(""" 
-                <b>Remember to:</b>
+                <b>Top tips:</b>
                 <ul>
-                    <li><b>Evaluate, don't describe:</b> Focus on critical evaluation rather than mere description. Answer in line with the command verbs.</li>
-                    <li><b>Use recent research:</b> Ensure your references are from the last 5 years, except for classic theories.</li>
-                    <li><b>Consider both sides:</b> Discuss both advantages and disadvantages in your evaluations, where appropriate.</li>
-                    <li><b>Support claims with evidence:</b> Avoid making bold claims without solid evidence to back them up.</li>
+                    <li><b>Address the command verb</b> used in the question (e.g. evaluate, assess, analyse) and ensure your response clearly demonstrates that level of thinking.</li>
+                    <li><b>Apply your answer directly to the case study</b> provided rather than responding in general terms.</li>
+                    <li><b>Follow the required format</b> specified in the assignment brief (e.g. report structure, headings, or specific sections requested).</li>
+                    <li><b>Check that your response stays within the maximum word limit</b> set out in the assignment brief.</li>
+                </ul>
+                """, unsafe_allow_html=True)
+            elif level.lower().find("level 5") != -1:
+                st.markdown("")  # Add spacing before disclaimer
+                st.markdown(""" 
+                <b>Always remember to:</b>
+                <ul>
+                    <li><b>Address the command verb</b> used in the question (e.g. evaluate, assess, analyse) and ensure your response clearly demonstrates that level of thinking.</li>
+                    <li><b>Include at least one credible reference</b> to support your answer (e.g. CIPD resources, academic sources, or recognised industry research).</li>
+                    <li><b>Apply your answer directly to the case study</b> provided rather than responding in general terms.</li>
+                    <li><b>Follow the required format</b> specified in the assignment brief (e.g. report structure, headings, or specific sections requested).</li>
+                    <li><b>Check that your response stays within the maximum word limit</b> set out in the assignment brief.</li>
                 </ul>
                 """, unsafe_allow_html=True)
             else:
                 st.markdown("""
                 <b>Remember to:</b>
                 <ul>
-                    <li>Address the command verb (e.g. evaluate, assess, analyse) used in the question.</li>
-                    <li>Include at least one credible reference to support your response.</li>
-                    <li>Apply your answer directly to the case study provided.</li>
+                    <li><b>Evaluate, don't describe:</b> Focus on critical evaluation rather than mere description. Answer in line with the command verbs.</li>
+                    <li><b>Use recent research:</b> Ensure your references are from the last 5 years, except for classic theories.</li>
+                    <li><b>Consider both sides:</b> Discuss both advantages and disadvantages in your evaluations, where appropriate.</li>
+                    <li><b>Support claims with evidence:</b> Avoid making bold claims without solid evidence to back them up.</li>
                 </ul>
                 """, unsafe_allow_html=True)
         except requests.exceptions.RequestException as e:
