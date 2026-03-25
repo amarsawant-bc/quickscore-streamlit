@@ -461,7 +461,7 @@ if st.button("Submit"):
                     <li><b>Check that your response stays within the maximum word limit</b> set out in the assignment brief.</li>
                 </ul>
                 """, unsafe_allow_html=True)
-            else:
+            elif level.lower().find("level 7") != -1:
                 st.markdown("""
                 <b>Remember to:</b>
                 <ul>
@@ -469,6 +469,7 @@ if st.button("Submit"):
                     <li><b>Use recent research:</b> Ensure your references are from the last 5 years, except for classic theories.</li>
                     <li><b>Consider both sides:</b> Discuss both advantages and disadvantages in your evaluations, where appropriate.</li>
                     <li><b>Support claims with evidence:</b> Avoid making bold claims without solid evidence to back them up.</li>
+                    <li><b>Use the Hub writing resources:</b> Visit the <a href="https://hub.avadolearning.com/learn/learning-path/level-7-writing-resources" target="_blank">writing resources area</a> in the Hub for guidance on structure, referencing and academic writing.</li>
                 </ul>
                 """, unsafe_allow_html=True)
         except requests.exceptions.RequestException as e:
